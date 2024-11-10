@@ -105,3 +105,7 @@ def generate_styles(df, column_name):
         )
 
     return styles
+
+def check_ids_match(real_time_trip_id_series: pd.Series, static_trip_id_series: pd.Series, static_dataset_path: str) -> pd.Series:
+    if not real_time_trip_id_series.isin(static_trip_id_series).all():
+        raise ValueError(f"IDs from the real-time data do not match the static IDs in '{static_dataset_path}'.")

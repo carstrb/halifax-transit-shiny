@@ -13,6 +13,7 @@ from www.helpers.utilities import (
     get_time_value_in_minutes,
     process_stop_times_date,
     stringify_trips_and_stops,
+    check_ids_match,
 )
 from www.helpers.schemas import real_time_schema, trips_schema, stops_schema, stop_times_schema
 
@@ -90,6 +91,12 @@ def fetch_and_process_data() -> dict:
     stops_schema.validate(stops)
     trips_schema.validate(trips)
     stop_times_schema.validate(stop_times)
+
+    check_ids_match(realtime_data['trip_id'], trips['trip_id'], TRIPS_PATH)
+    check_ids_match(realtime_data['trip_id'], stop_times['trip_id'], STOP_TIMES_PATH)
+    check_ids_match(realtime_data['stop_id'], trips['stop_id'], TRIPS_PATH)
+    check_ids_match(realtime_data['stop_id'], stops['stop_id'], STOPS_PATH)
+    check_ids_match(realtime_data['stop_id'], stop_times['stop_id'], STOP_TIMES_PATH)
 
     merged_df = pd.merge(
         realtime_data,
