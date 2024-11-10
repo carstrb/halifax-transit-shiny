@@ -14,6 +14,7 @@ from www.helpers.utilities import (
     process_stop_times_date,
     stringify_trips_and_stops,
 )
+from www.helpers.schemas import real_time_schema, trips_schema, stops_schema, stop_times_schema
 
 
 def download_and_extract_zip(url, extract_to="."):
@@ -84,6 +85,11 @@ def fetch_and_process_data() -> dict:
     stringify_trips_and_stops(realtime_data)
     stringify_trips_and_stops(trips)
     stringify_trips_and_stops(stops)
+
+    real_time_schema.validate(realtime_data)
+    stops_schema.validate(stops)
+    trips_schema.validate(trips)
+    stop_times_schema.validate(stop_times)
 
     merged_df = pd.merge(
         realtime_data,
