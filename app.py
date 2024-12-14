@@ -5,17 +5,17 @@ from shiny import App, render, reactive, ui
 from ipyleaflet import Map, basemaps, Marker, Icon, Heatmap
 from shinywidgets import render_widget, output_widget
 from www.helpers.utilities import generate_styles
-from www.helpers.constants import CONTAINER_HEIGHT, STATIC_URL, DATA_REFRESH_INTERVAL_SECONDS
-from www.helpers.feed import fetch_and_process_data, download_and_extract_zip
+from www.helpers.constants import CONTAINER_HEIGHT, DATA_REFRESH_INTERVAL_SECONDS
+from www.helpers.feed import fetch_and_process_realtime_data, fetch_and_process_static_data
 import ipywidgets as widgets
 from www.helpers.utilities import get_stop_info
 
-download_and_extract_zip(STATIC_URL, './www/static_data')
+fetch_and_process_static_data()
 
 # Reactive polling function
-@reactive.poll(fetch_and_process_data, interval_secs=DATA_REFRESH_INTERVAL_SECONDS)  # Updated based on refresh interval
+@reactive.poll(fetch_and_process_realtime_data, interval_secs=DATA_REFRESH_INTERVAL_SECONDS)  # Updated based on refresh interval
 def get_processed_data():
-    return fetch_and_process_data()
+    return fetch_and_process_realtime_data()
 
 def app_ui():
     return ui.page_navbar(
@@ -103,7 +103,7 @@ def server(input, output, session):
     
     @render.ui
     def stop_selector():
-        data = fetch_and_process_data()
+        data = fetch_and_process_realtime_data()
         choices = data["stop_names"]
         return ui.input_selectize("selected_stop", "Select a Stop", choices=choices, multiple=False)
     
@@ -147,7 +147,7 @@ def server(input, output, session):
     
     @render_widget
     def map():
-        data = fetch_and_process_data()
+        data = fetch_and_process_realtime_data()
 
         merged_df = pd.DataFrame(data['merged_df'])
         unique_stops_df = merged_df.drop_duplicates(subset=["stop_name", "stop_lat", "stop_lon"])

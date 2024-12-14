@@ -1,5 +1,7 @@
-from pandera import Column, DataFrameSchema
+from pandera import Column, DataFrameSchema, Check
+from pandera.engines import pandas_engine
 from datetime import datetime
+from www.helpers.constants import CALENDAR_DATE_FORMAT
 
 real_time_schema = DataFrameSchema(
     {
@@ -61,6 +63,29 @@ trips_schema = DataFrameSchema(
         'shape_id': Column(int), 
         'wheelchair_accessible': Column(int),
         'bikes_allowed': Column(int),
+    },
+    strict=True,
+    coerce=True,
+)
+
+calendar_schema = DataFrameSchema(
+    {
+        "service_id": Column(str, nullable=False),
+        "monday": Column(int, Check.isin([0, 1]), nullable=False),
+        "tuesday": Column(int, Check.isin([0, 1]), nullable=False),
+        "wednesday": Column(int, Check.isin([0, 1]), nullable=False),
+        "thursday": Column(int, Check.isin([0, 1]), nullable=False),
+        "friday": Column(int, Check.isin([0, 1]), nullable=False),
+        "saturday": Column(int, Check.isin([0, 1]), nullable=False),
+        "sunday": Column(int, Check.isin([0, 1]), nullable=False),
+        "start_date": Column(
+            pandas_engine.DateTime(to_datetime_kwargs={"format": CALENDAR_DATE_FORMAT}),
+            nullable=False,
+        ),
+        "end_date": Column(
+            pandas_engine.DateTime(to_datetime_kwargs={"format": CALENDAR_DATE_FORMAT}),
+            nullable=False,
+        ),
     },
     strict=True,
     coerce=True,

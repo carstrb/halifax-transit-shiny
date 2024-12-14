@@ -6,7 +6,7 @@ from datetime import datetime
 import pandas as pd
 from google.transit import gtfs_realtime_pb2
 
-from www.helpers.constants import FEED_URL, STOP_TIMES_PATH, STOPS_PATH, TRIPS_PATH
+from www.helpers.constants import FEED_URL, STOP_TIMES_PATH, STOPS_PATH, TRIPS_PATH, CALENDAR_DATE_FORMAT, STATIC_URL, CALENDAR_PATH
 from www.helpers.utilities import (
     calculate_time_difference,
     convert_to_minutes_from_now,
@@ -14,7 +14,7 @@ from www.helpers.utilities import (
     process_stop_times_date,
     stringify_trips_and_stops,
 )
-from www.helpers.schemas import real_time_schema, trips_schema, stops_schema, stop_times_schema
+from www.helpers.schemas import real_time_schema, trips_schema, stops_schema, stop_times_schema, calendar_schema
 
 
 def download_and_extract_zip(url, extract_to="."):
@@ -65,7 +65,7 @@ def parse_feed(feed):
     return pd.DataFrame(data)
 
 
-def fetch_and_process_data() -> dict:
+def fetch_and_process_realtime_data() -> dict:
     pb_url = FEED_URL
     feed = get_realtime_transit_feed(pb_url)
     realtime_data = parse_feed(feed)
@@ -174,3 +174,32 @@ def fetch_and_process_data() -> dict:
         "stop_names": stop_names,
         "delays_heatmap_data": delays_heatmap_data,
     }
+
+def validate_calendar_schema(calendar_path: str) -> pd.DataFrame:
+    calendar = pd.read_csv(calendar_path)
+    
+    if {'start_date', 'end_date'}.issubset(calendar.columns):
+        for col in ['start_date', 'end_date']:
+            calendar[col] = pd.to_datetime(calendar[col], format=CALENDAR_DATE_FORMAT).dt.date
+
+    calendar_schema.validate(calendar)
+
+    return calendar
+
+def fetch_and_process_static_data() -> None:
+    print("Downloading static data...")
+    download_and_extract_zip(STATIC_URL, './www/static_data')
+
+    print("Validating static data schemas...")
+    validated_calendar_dates = validate_calendar_schema(CALENDAR_PATH)
+    print("Static data matches expected schemas")
+
+    print("Checking if static data is valid for current date")
+    if not is_static_data_current(validated_calendar_dates):
+        raise ValueError("Static data is not valid for the current date.")
+    print("Static data is valid for current date!")
+
+def is_static_data_current(calendar_df: pd.DataFrame) -> bool:
+    current_date = datetime.now().date()
+
+    return all((calendar_df["start_date"] <= current_date) & (calendar_df["end_date"] >= current_date))

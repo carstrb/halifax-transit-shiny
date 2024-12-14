@@ -4,4 +4,6 @@ FEED_URL = "https://gtfs.halifax.ca/realtime/TripUpdate/TripUpdates.pb"
 STOP_TIMES_PATH = "www/static_data/stop_times.txt"
 TRIPS_PATH = "www/static_data/trips.txt"
 STOPS_PATH = "www/static_data/stops.txt"
+CALENDAR_DATE_FORMAT = "%Y%m%d"
+CALENDAR_PATH = "www/static_data/calendar.txt"
 DATA_REFRESH_INTERVAL_SECONDS = 60
