@@ -16,10 +16,16 @@ ipyleaflet = "^0.19.2"
 ipywidgets = "^8.1.5"
 shinywidgets = "^0.3.3"
 pandera = "^0.20.4"
+ruff = "^0.8.3"
 
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.4"
+poethepoet = "^0.31.1"
+
+[tool.poe.tasks]
+lint = "ruff check ."
+format = "ruff format --check ."
 
 [build-system]
 requires = ["poetry-core"]
