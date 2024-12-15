@@ -169,58 +169,60 @@ class TestUtilities(unittest.TestCase):
 
     def test_get_time_value_in_minutes(self):
         data = {
-            'time_difference': [timedelta(minutes=60), timedelta(minutes=20), timedelta(minutes=5)]
+            "time_difference": [
+                timedelta(minutes=60),
+                timedelta(minutes=20),
+                timedelta(minutes=5),
+            ]
         }
 
         df = pd.DataFrame(data)
 
-        result = get_time_value_in_minutes(df['time_difference'])
+        result = get_time_value_in_minutes(df["time_difference"])
 
-        expected_result = pd.Series(
-            [60, 20, 5]
-        )
+        expected_result = pd.Series([60, 20, 5])
 
         for res, exp in zip(result, expected_result):
             self.assertEqual(res, exp)
 
     def test_generate_styles(self):
         data = {
-            'time_difference': [12, -3, 0, 7, 2],
+            "time_difference": [12, -3, 0, 7, 2],
         }
         df = pd.DataFrame(data)
 
-        styles = generate_styles(df, 'time_difference')
+        styles = generate_styles(df, "time_difference")
 
         expected_styles = [
             {
-                'location': 'body',
-                'rows': [0],
-                'cols': [0],
-                'style': {'background-color': 'rgba(255, 0, 0, 0.8)'}
+                "location": "body",
+                "rows": [0],
+                "cols": [0],
+                "style": {"background-color": "rgba(255, 0, 0, 0.8)"},
             },
             {
-                'location': 'body',
-                'rows': [1],
-                'cols': [0],
-                'style': {'background-color': 'rgba(0, 128, 0, 0.2)'}
+                "location": "body",
+                "rows": [1],
+                "cols": [0],
+                "style": {"background-color": "rgba(0, 128, 0, 0.2)"},
             },
             {
-                'location': 'body',
-                'rows': [2],
-                'cols': [0],
-                'style': {'background-color': 'rgba(255, 255, 255, 1.0)'}
+                "location": "body",
+                "rows": [2],
+                "cols": [0],
+                "style": {"background-color": "rgba(255, 255, 255, 1.0)"},
             },
             {
-                'location': 'body',
-                'rows': [3],
-                'cols': [0],
-                'style': {'background-color': 'rgba(255, 0, 0, 0.5)'}
+                "location": "body",
+                "rows": [3],
+                "cols": [0],
+                "style": {"background-color": "rgba(255, 0, 0, 0.5)"},
             },
             {
-                'location': 'body',
-                'rows': [4],
-                'cols': [0],
-                'style': {'background-color': 'rgba(255, 0, 0, 0.2)'}
+                "location": "body",
+                "rows": [4],
+                "cols": [0],
+                "style": {"background-color": "rgba(255, 0, 0, 0.2)"},
             },
         ]
 

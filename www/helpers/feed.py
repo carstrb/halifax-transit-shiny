@@ -14,7 +14,12 @@ from www.helpers.utilities import (
     process_stop_times_date,
     stringify_trips_and_stops,
 )
-from www.helpers.schemas import real_time_schema, trips_schema, stops_schema, stop_times_schema
+from www.helpers.schemas import (
+    real_time_schema,
+    trips_schema,
+    stops_schema,
+    stop_times_schema,
+)
 
 
 def download_and_extract_zip(url, extract_to="."):
